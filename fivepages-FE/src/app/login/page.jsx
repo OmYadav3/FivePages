@@ -90,8 +90,8 @@ export default function AuthPage() {
         setPassword("");
         setName("");
 
-        // Redirect to Home Page
-        router.push("/");
+        // Redirect to Previous page
+        router.back();
       }
     } catch (err) {
       setError("Network error. Please try again.");

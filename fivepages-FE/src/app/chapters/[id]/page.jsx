@@ -67,7 +67,7 @@ export default function ChapterPage() {
       <h1 className="text-4xl font-bold text-center content-container ">
         Chapter 1
       </h1>
-      <h2 className="content-container text-3xl font-bold text-gray-800 mt-4 select-none">
+      <h2 className="text-center content-container text-3xl font-bold text-gray-800 mt-4 select-none">
         {chapters.title}
       </h2>
       <p
