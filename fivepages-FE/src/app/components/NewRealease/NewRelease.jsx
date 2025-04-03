@@ -5,6 +5,7 @@ const NewReleases = ({ books }) => {
   const router = useRouter();
 
   return (
+  
     <section className="p-6 bg-white">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold flex items-center">

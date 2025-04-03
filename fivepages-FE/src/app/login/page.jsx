@@ -3,6 +3,7 @@
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 export default function AuthPage() {
   const router = useRouter();
@@ -90,9 +91,17 @@ export default function AuthPage() {
         setPassword("");
         setName("");
 
-        // Redirect to Previous page
-        router.back();
+        // ✅ Show toast message only if login/register is successful
+       if (data.user) {
+        if (isLogin) {
+          toast.success("Login successful! Redirecting...");
+        } else {
+          toast.success("Registration successful! Redirecting...");
+        }
+        router.push("/");
       }
+    
+    }
     } catch (err) {
       setError("Network error. Please try again.");
     } finally {

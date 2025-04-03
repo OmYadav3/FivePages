@@ -2,156 +2,184 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
-import { Select } from "@headlessui/react";
 
 export default function ChapterPage() {
   const router = useRouter();
-  const { id } = useParams(); // ✅ Extract the correct novel ID
+  const { id } = useParams();
+  console.log("Chapter ID:", id);
 
-  const [chapters, setChapters] = useState(); // Store an array of chapters
+  const [chapter, setChapter] = useState(null);
+  const [novel, setNovel] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     const user = localStorage.getItem("user");
-    console.log(user);
-
     if (!user) {
       router.push("/login");
     } else {
       setIsAuthenticated(true);
     }
-  }, []);
+  }, [router]);
 
   useEffect(() => {
-    const fetchChapters = async () => {
+    const fetchData = async () => {
       try {
-        const response = await fetch(
+        setLoading(true);
+        
+        // 1. First fetch the chapter data
+        const chapterResponse = await fetch(
           `http://localhost:5000/api/v1/chapters/${id}`
         );
+        
+        if (!chapterResponse.ok) {
+          throw new Error("Failed to fetch chapter");
+        }
 
-        const data = await response.json();
-        console.log("API Response:", data); // Debug log
+        const chapterData = await chapterResponse.json();
+        console.log("Chapter data:", chapterData);
+        setChapter(chapterData);
+        chapterData.content = chapterData.content.replace(/\n/g , "<br>");
 
-        if (!response.ok)
-          throw new Error(data.message || "Failed to fetch chapters data.");
+        // 2. Then fetch the novel data - use chapterData.novel (not novelId)
+        const novelResponse = await fetch(
+          `http://localhost:5000/api/v1/novels/${chapterData.novel}`
+        );
+        
+        if (!novelResponse.ok) {
+          throw new Error("Failed to fetch novel");
+        }
 
-        setChapters(data); // Store the array of chapters
-        // console.log(data.content);
-        data.content = data.content.replace(/\n/g, "<br>");
-      } catch (error) {
-        console.error("Error fetching chapters:", error);
+        const novelData = await novelResponse.json();
+        console.log("Novel data:", novelData);
+        setNovel(novelData);
+
+      } catch (err) {
+        console.error("Error fetching data:", err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
       }
     };
 
-    if (id) fetchChapters();
-  }, [id]);
+    if (isAuthenticated && id) {
+      fetchData();
+    }
+  }, [id, isAuthenticated]);
 
   if (!isAuthenticated) {
+    return <div className="text-center py-10">Redirecting to login...</div>;
+  }
+
+  if (loading) {
     return (
-      <p className="text-center text-gray-500 text-lg mt-10">
-        Redirecting to login...
-      </p>
+      <div className="flex justify-center items-center min-h-screen">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+      </div>
     );
   }
 
-  if (!chapters) {
+  if (error) {
     return (
-      <p className="text-center text-gray-500 text-lg mt-10">
-        No chapters found
-      </p>
+      <div className="max-w-2xl mx-auto p-6 text-center">
+        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
+          <h3 className="text-red-800 font-medium">Error loading chapter</h3>
+          <p className="text-red-700">{error}</p>
+        </div>
+        <button
+          onClick={() => window.location.reload()}
+          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+        >
+          Try Again
+        </button>
+      </div>
     );
   }
+
+  if (!chapter || !novel) {
+    return (
+      <div className="max-w-2xl mx-auto p-6 text-center">
+        <p className="text-gray-600 mb-4">Chapter data not found</p>
+        <Link href="/" className="text-blue-500 hover:underline">
+          Return to homepage
+        </Link>
+      </div>
+    );
+  }
+
+  // Find current chapter index for navigation
+  const currentIndex = novel.chapters?.findIndex(ch => ch._id === id) ?? -1;
+  const prevChapter = currentIndex > 0 ? novel.chapters[currentIndex - 1] : null;
+  const nextChapter = currentIndex < novel.chapters?.length - 1 ? novel.chapters[currentIndex + 1] : null;
 
   return (
-    <div className="my-10 px-12 py-18 max-w-3xl mx-auto bg-white shadow-md rounded-lg border border-gray-200   ">
-      <h1 className="text-4xl font-bold text-center content-container ">
-        Chapter 1
-      </h1>
-      <h2 className="text-center content-container text-3xl font-bold text-gray-800 mt-4 select-none">
-        {chapters.title}
-      </h2>
-      <p
-        className="content-container mt-6 text-lg text-gray-700 select-none "
-        dangerouslySetInnerHTML={{ __html: chapters.content }}
-      />
+    <div className="max-w-4xl mx-auto px-4 py-8">
+      {/* Breadcrumb Navigation */}
+      <nav className="flex mb-6 text-sm text-gray-600">
+        <Link href="/" className="hover:text-blue-500">Home</Link>
+        <span className="mx-2">/</span>
+        <Link href="/novels" className="hover:text-blue-500">Novels</Link>
+        <span className="mx-2">/</span>
+        <Link href={`/novels/${novel._id}`} className="hover:text-blue-500">{novel.title}</Link>
+        <span className="mx-2">/</span>
+        <span className="text-gray-400">{chapter.title}</span>
+      </nav>
 
-      {/* Navigation */}
-      <div className="flex justify-between my-6">
-        {chapters.id > 1 ? (
-          <Link
-            href={`/chapter/${chapter.id - 1}`}
-            className="px-4 py-2 bg-[#E3E8F0] rounded-lg hover:bg-[#D4DBE8] transition "
-          >
-            &larr; Prev
-          </Link>
-        ) : (
-          <span className="px-4 py-2 bg-gray-200 rounded-lg opacity-50 pointer-events-none">
-            &larr; Prev
-          </span>
-        )}
+      {/* Chapter Header */}
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-gray-900">{novel.title}</h1>
+        <h2 className="text-2xl font-semibold text-gray-800 mt-2">{chapter.title}</h2>
+      </div>
 
-        {chapters.id < chapters.length ? (
-          <Link
-            href={`/chapters/${chapter.id + 1}`}
-            className="px-4 py-2 bg-[#E3E8F0] rounded-lg hover:bg-[#D4DBE8] transition"
-          >
-            Next &rarr;
-          </Link>
+      {/* Chapter Content */}
+      <div className="prose max-w-none">
+        {chapter.content ? (
+          <div dangerouslySetInnerHTML={{ __html: chapter.content }} />
         ) : (
-          <span className="px-4 py-2 bg-gray-200 rounded-lg opacity-50 pointer-events-none ">
-            Next &rarr;
-          </span>
+          <div className="text-center py-12 text-gray-500">
+            <p>No content available for this chapter.</p>
+          </div>
         )}
       </div>
 
-      {/* Recommended Novels */}
-      {/* <div className="mt-8">
-        <h3 className="text-xl font-semibold text-gray-800 border-b pb-2">
-          📖 Recommended Novels
-        </h3>
-        <ul className="mt-4 space-y-2">
-          {recommendedNovels.map((novel) => (
-            <li
-              key={novel.id}
-              className="text-[#4A90E2] cursor-pointer hover:underline"
-            >
-              <Link href={`/novel/${novel.id}`}>{novel.title}</Link>
-            </li>
-          ))}
-        </ul>
-      </div> */}
-
-      {/* Comments Section */}
-      {/* <div className="mt-8">
-        <h3 className="text-xl font-semibold text-gray-800 border-b pb-2">
-          💬 Comments
-        </h3>
-        <div className="mt-4 flex flex-col gap-2">
-          <input
-            type="text"
-            value={newComment}
-            onChange={(e) => setNewComment(e.target.value)}
-            className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-[#4A90E2]"
-            placeholder="Leave a comment..."
-          />
-          <button
-            onClick={addComment}
-            className="bg-[#A3BCE2] text-white px-4 py-2 rounded-lg hover:bg-[#8FA8D1] transition"
+      {/* Chapter Navigation */}
+      <div className="mt-12 pt-6 border-t border-gray-200 flex justify-between">
+        {prevChapter ? (
+          <Link
+            href={`/chapters/${prevChapter._id}`}
+            className="flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded transition-colors"
           >
-            Post Comment
-          </button>
-        </div>
-
-        {comments.length > 0 && (
-          <ul className="mt-4 space-y-2">
-            {comments.map((comment, index) => (
-              <li key={index} className="border-b p-2 bg-[#F7F7F7] rounded-lg">
-                {comment}
-              </li>
-            ))}
-          </ul>
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+            </svg>
+            Previous Chapter
+          </Link>
+        ) : (
+          <div></div>
         )}
-      </div> */}
+
+        <Link
+          href={`/novels/${novel._id}`}
+          className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded transition-colors"
+        >
+          Back to Novel
+        </Link>
+
+        {nextChapter ? (
+          <Link
+            href={`/chapters/${nextChapter._id}`}
+            className="flex items-center px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded transition-colors"
+          >
+            Next Chapter
+            <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </Link>
+        ) : (
+          <div></div>
+        )}
+      </div>
     </div>
   );
 }
