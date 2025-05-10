@@ -1,4 +1,3 @@
-// import Navbar from "./Components/Navbar";
 import { Toaster } from "react-hot-toast";
 import Footer from "./components/Footer/Footer";
 import Navbar from "./components/Navbar/Navbar";

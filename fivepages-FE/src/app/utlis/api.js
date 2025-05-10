@@ -46,7 +46,6 @@ export const fetchCarouselImages = () => fetchData("novels/latest");
 export const fetchNovelById = (novelId) => fetchData(`novels/${novelId}`);
 export const fetchAllNovels = () => fetchData("novels/")
 
-// 🔹 Comments
 export const fetchCommentsByNovel = (novelId) => fetchData(`comments?novelId=${novelId}`);
 
 export const postComment = ({ content, userId, novelId }) =>
