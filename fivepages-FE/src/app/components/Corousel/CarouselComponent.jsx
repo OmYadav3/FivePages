@@ -6,23 +6,20 @@ import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import React,{ useCallback } from "react";
 
-// Memoize CarouselComponent to avoid unnecessary re-renders
-const CarouselComponent = React.memo(({ books }) => {
+const CarouselComponent = ({ books }) => {
   const router = useRouter();
 
   if (!books || books.length === 0) {
     return <p className="text-xl text-center my-2">Loading images...</p>;
   }
 
-  // Memoize the handleClick function using useCallback
-  const handleClick = useCallback((id) => {
+  const handleClick = (id) => {
     router.push(`/novels/${id}`);
-  }, [router]);
+  };
 
   return (
-    <div className="w-full my-4 bg-white p-4">
+    <div className="w-full my-4 bg-white p-4 rounded-lg shadow-md">
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
         slidesPerView={1}
@@ -35,27 +32,28 @@ const CarouselComponent = React.memo(({ books }) => {
           768: { slidesPerView: 2 },
           1024: { slidesPerView: 3 },
         }}
-        className="rounded-lg shadow-lg"
+        className="rounded-lg"
       >
-        {books.map((book) => (
-          <SwiperSlide key={book._id} className="p-4 my-4">
-            <button
-              onClick={() => handleClick(book._id)} // Single onClick handler
-              className="w-full"
+        {books.map((book, index) => (
+          <SwiperSlide key={index} className="p-2">
+            <div
+              onClick={() => handleClick(book._id)}
+              className="cursor-pointer group"
             >
               <img
                 src={book.thumbnail}
                 alt={book.title}
-                className="w-full h-[32rem] object-cover rounded-lg shadow-md cursor-pointer"
-                loading="lazy" // Lazy load images
+                className="w-full h-64 sm:h-72 md:h-80 lg:h-[70vh]  object-cover rounded-lg shadow-lg group-hover:scale-[1.02] transition-transform duration-300"
               />
-            </button>
-            <h3 className="text-center mt-2 font-semibold">{book.title}</h3>
+              <h3 className="text-center mt-2 font-semibold text-base sm:text-lg md:text-xl">
+                {book.title}
+              </h3>
+            </div>
           </SwiperSlide>
         ))}
       </Swiper>
     </div>
   );
-});
+};
 
 export default CarouselComponent;

@@ -12,11 +12,8 @@ export default function Navbar() {
   const [user, setUser] = useState(null);
   const isAuthenticated = useMemo(() => !!user, [user]);
   const [menuOpen, setMenuOpen] = useState(false);
-
-  // track search input
   const [searchQuery, setSearchQuery] = useState("");
 
-  // reload user on path change
   useEffect(() => {
     if (typeof window === "undefined") return;
     try {
@@ -47,16 +44,6 @@ export default function Navbar() {
     [router, handleLogout]
   );
 
-  const userLabel = useMemo(() => (user ? user.name : ""), [user]);
-
-  const navItems = [
-    { path: "/", label: "Home" },
-    { path: "/popularbooks", label: "Popular" },
-    { path: "/new-releases-page", label: "New Release" },
-    { path: "/allnovels", label: "Novels" },
-  ];
-
-  // on Enter or search icon click, navigate to /search/[param]
   const triggerSearch = useCallback(() => {
     const q = searchQuery.trim();
     if (q) {
@@ -65,13 +52,22 @@ export default function Navbar() {
       setMenuOpen(false);
     }
   }, [router, searchQuery]);
-  
+
   const onSearchKeyDown = useCallback(
     (e) => {
       if (e.key === "Enter") triggerSearch();
     },
     [triggerSearch]
   );
+
+  const userLabel = useMemo(() => (user ? user.name : ""), [user]);
+
+  const navItems = [
+    { path: "/", label: "Home" },
+    { path: "/popularbooks", label: "Popular" },
+    { path: "/new-releases-page", label: "New Release" },
+    { path: "/allnovels", label: "Novels" },
+  ];
 
   return (
     <>
@@ -82,11 +78,7 @@ export default function Navbar() {
         Skip to content
       </a>
 
-      <nav
-        role="navigation"
-        aria-label="Main navigation"
-        className="flex items-center justify-between px-10 bg-white shadow-md mb-2 sticky top-0 z-50"
-      >
+      <nav className="flex items-center justify-between px-6 bg-white shadow-md mb-2 sticky top-0 z-50">
         {/* Logo */}
         <div
           role="button"
@@ -96,24 +88,20 @@ export default function Navbar() {
           onKeyDown={(e) => e.key === "Enter" && router.push("/")}
           className="cursor-pointer"
         >
-          <img src="/fivepagelogo.png" alt="Logo" className="w-auto h-20" />
+          <img src="/fivepagelogo.png" alt="Logo" className="w-auto h-16" />
         </div>
 
         {/* Mobile menu toggle */}
         <button
-          onClick={() => setMenuOpen((o) => !o)}
+          onClick={() => setMenuOpen((prev) => !prev)}
           aria-label={menuOpen ? "Close menu" : "Open menu"}
-          className="md:hidden"
+          className="md:hidden text-2xl"
         >
           {menuOpen ? <FaTimes /> : <FaBars />}
         </button>
 
-        {/* Navigation Links */}
-        <ul
-          className={`flex gap-4 list-none ${
-            menuOpen ? "block" : "hidden md:flex"
-          }`}
-        >
+        {/* Desktop Nav Items */}
+        <ul className="hidden md:flex gap-6 items-center">
           {navItems.map(({ path, label }) => {
             const isActive = pathname === path;
             return (
@@ -131,14 +119,13 @@ export default function Navbar() {
           })}
         </ul>
 
-        {/* Right Section */}
-        <div className="flex items-center gap-6">
-          {/* Search Box */}
+        {/* Search + Profile (desktop) */}
+        <div className="hidden md:flex items-center gap-6">
+          {/* Search */}
           <div className="flex items-center border border-gray-400 rounded-md px-3 py-[0.32rem]">
             <input
               type="text"
               placeholder="Search"
-              aria-label="Search novels"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               onKeyDown={onSearchKeyDown}
@@ -150,10 +137,10 @@ export default function Navbar() {
             />
           </div>
 
-          {/* Profile Section */}
+          {/* Profile */}
           {isAuthenticated ? (
             <div className="flex items-center gap-2">
-              <FaUserCircle className="text-2xl text-black" aria-hidden="true" />
+              <FaUserCircle className="text-2xl text-black" />
               <select
                 aria-label="User menu"
                 className="border border-gray-300 rounded-md px-2 py-1 bg-white cursor-pointer"
@@ -169,16 +156,84 @@ export default function Navbar() {
             </div>
           ) : (
             <Link href="/login">
-              <button
-                className="bg-white text-black px-2 py-1 rounded-md hover:bg-gray-100 transition"
-                aria-label="Login"
-              >
+              <button className="text-black px-2 py-1 rounded-md hover:bg-gray-100 transition">
                 Login
               </button>
             </Link>
           )}
         </div>
       </nav>
+
+      {/* Mobile Dropdown Menu */}
+      {menuOpen && (
+        <div className="md:hidden bg-white shadow-md px-6 pb-4 space-y-3">
+          {/* Nav Links */}
+          {navItems.map(({ path, label }) => {
+            const isActive = pathname === path;
+            return (
+              <Link
+                key={path}
+                href={path}
+                onClick={() => setMenuOpen(false)}
+                className={`block py-1 text-lg ${
+                  isActive ? "text-blue-700 font-semibold" : "text-black"
+                }`}
+              >
+                {label}
+              </Link>
+            );
+          })}
+
+          {/* Search */}
+           <div className="flex items-center border border-gray-400 rounded-md px-3 py-2">
+            <input
+              type="text"
+              placeholder="Search"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={onSearchKeyDown}
+              className="outline-none text-sm text-gray-700 px-2 w-full"
+            />
+            <FaSearch
+              className="text-blue-700 cursor-pointer"
+              onClick={triggerSearch}
+            />
+          </div> 
+          <hr className="my-3 border-gray-300" />
+          {/* Profile / Logout */}
+          {isAuthenticated ? (
+  <>
+    <div className="text-base text-gray-600 ">
+      <span className="font-semibold text-black">{userLabel}</span>
+    </div>
+    <button
+      onClick={() => {
+        router.push("/profile");
+        setMenuOpen(false);
+      }}
+      className="w-full text-left py-1 text-black hover:text-blue-700"
+    >
+      Profile
+    </button>
+    <button
+      onClick={() => {
+        handleLogout();
+        setMenuOpen(false);
+      }}
+      className="w-full text-left py-1 text-black hover:text-blue-700"
+    >
+      Logout
+    </button>
+  </>
+) : (
+            <Link href="/login" onClick={() => setMenuOpen(false)}>
+              <button className="w-full text-left py-1 text-black hover:text-blue-700">
+                Login
+              </button>
+            </Link>
+          )}
+        </div>
+      )}
 
       <main id="main-content" />
 

@@ -4,25 +4,25 @@ import mongoose from 'mongoose';
 
 // done and tested
 export const createChapter = async (req, res) => {
-  const { novelId, chapterNumber, title, content } = req.body;
+  const { novelID, chapterNumber, title, content } = req.body;
 
-  if (!novelId || (!chapterNumber && chapterNumber != 0) || isNaN(chapterNumber) || !content) {
-    return res.status(400).json({ message: 'Novel ID, chapter number, and content are required' });
+  if (!novelID || (!chapterNumber && chapterNumber != 0) || isNaN(chapterNumber) || !content) {
+    return res.status(400).json({ message: 'novelID, chapterNumber, and content are required' });
   }
 
   try {
 
-    const existingChapter = await Chapter.findOne({ novel: novelId, chapterNumber });
+    const existingChapter = await Chapter.findOne({ novel: novelID, chapterNumber });
 
     if (existingChapter) {
       return res.status(400).json({ message: 'Chapter number already exists' });
     }
 
     // Create chapter
-    const chapter = await Chapter.create({ novel: novelId, chapterNumber, title: title ? title : "", content });
+    const chapter = await Chapter.create({ novel: novelID, chapterNumber, title: title ? title : "", content });
 
     // Push chapter to novel
-    await Novel.findByIdAndUpdate(novelId, { $push: { chapters: chapter._id } });
+    await Novel.findByIdAndUpdate(novelID, { $push: { chapters: chapter._id } });
 
     res.status(201).json(chapter);
   } catch (err) {
@@ -45,26 +45,26 @@ export const updateChapter = async (req, res) => {
     return res.status(400).json({ message: 'Invalid chapter ID' });
   }
 
-  
+
 
   if (!content && !title && !chapterNumber) {
     return res.status(400).json({ message: 'Content, title or chapterNumber is required' });
   }
 
   // Check if the chapterNumber already exists for the same novel
-  const chapterWithChapterNumber = await Chapter.findOne({ chapterNumber, novel: novelID});
+  const chapterWithChapterNumber = await Chapter.findOne({ chapterNumber, novel: novelID });
 
-  if (chapterWithChapterNumber && chapterWithChapterNumber._id.toString() !== chapterID ) {
+  if (chapterWithChapterNumber && chapterWithChapterNumber._id.toString() !== chapterID) {
     return res.status(400).json({ message: 'Chapter number already exists' });
   }
-  
+
   try {
     const existingChapter = await Chapter.findById(chapterID);
     if (!existingChapter) {
       return res.status(404).json({ message: 'Chapter not found' });
     }
 
-    if(existingChapter.novel.toString() !== novelID) {
+    if (existingChapter.novel.toString() !== novelID) {
       return res.status(400).json({ message: 'Chapter does not belong to this novel' });
     }
 
