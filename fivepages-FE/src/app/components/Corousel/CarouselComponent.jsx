@@ -19,10 +19,10 @@ const CarouselComponent = ({ books }) => {
   };
 
   return (
-    <div className="w-full my-4 bg-white p-4 rounded-lg shadow-md">
+    <div className="w-full my-8 bg-white p-4 rounded-lg shadow-md">
       <Swiper
         modules={[Navigation, Pagination, Autoplay]}
-        slidesPerView={1}
+        slidesPerView={3}
         spaceBetween={20}
         navigation
         pagination={{ clickable: true }}
@@ -35,7 +35,7 @@ const CarouselComponent = ({ books }) => {
         className="rounded-lg"
       >
         {books.map((book, index) => (
-          <SwiperSlide key={index} className="p-2">
+          <SwiperSlide key={index} className="p-6">
             <div
               onClick={() => handleClick(book._id)}
               className="cursor-pointer group"
@@ -43,11 +43,23 @@ const CarouselComponent = ({ books }) => {
               <img
                 src={book.thumbnail}
                 alt={book.title}
-                className="w-full h-64 sm:h-72 md:h-80 lg:h-[70vh]  object-cover rounded-lg shadow-lg group-hover:scale-[1.02] transition-transform duration-300"
+                className="w-full h-64 sm:h-72 md:h-80 lg:h-[74vh]  transition-opacity duration-300 group-hover:opacity-80 border rounded"
               />
-              <h3 className="text-center mt-2 font-semibold text-base sm:text-lg md:text-xl">
-                {book.title}
-              </h3>
+              {/* Soft Overlay with Details */}
+              <div className="absolute inset-0 bg-white/10 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center text-gray-800 p-4 text-center">
+                <h3 className="text-3xl font-bold line-clamp-2 mb-1">
+                  {book.title}
+                </h3>
+                <p className=" mb-2 text-gray-700 font-bold">
+                  by {book.author}
+                </p>
+                <p className=" mb-1 text-green-600 font-bold">
+                  {book.views} Views
+                </p>
+                <p className="text-xs text-gray-600 line-clamp-3">
+                  {book.description}
+                </p>
+              </div>
             </div>
           </SwiperSlide>
         ))}

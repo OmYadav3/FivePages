@@ -4,10 +4,13 @@ import { useEffect, useState } from "react";
 import PopularBooks from "../Popular/Popular";
 import NewReleases from "../NewRealease/NewRelease";
 import CorouselComponent from "../Corousel/CarouselComponent";
+import LazyRender from "../LazyRender"; // path depends on your structure
 
 // Reusable Skeleton Loader
 const Skeleton = ({ className = "" }) => (
-  <div className={`bg-gray-200 dark:bg-gray-700 animate-pulse rounded ${className}`} />
+  <div
+    className={`bg-gray-200 dark:bg-gray-700 animate-pulse rounded ${className}`}
+  />
 );
 
 const Dashboard = () => {
@@ -18,7 +21,9 @@ const Dashboard = () => {
   // Fetching books from API
   const fetchBooks = async () => {
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_PORT || ""}novels/latest`);
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_PORT || ""}novels/latest`
+      );
       if (!res.ok) throw new Error(`API Error: ${res.status}`);
 
       const data = await res.json();
@@ -37,7 +42,7 @@ const Dashboard = () => {
 
   if (loading) {
     return (
-      <div className="lg:mx-32 mx-[25px] flex flex-col min-h-screen gap-6 py-8">
+      <div className="flex flex-col min-h-screen gap-6 py-8">
         <Skeleton className="h-48 w-full rounded-lg" />
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
           {Array.from({ length: 10 }).map((_, i) => (
@@ -59,17 +64,27 @@ const Dashboard = () => {
   if (books.length === 0) {
     return (
       <div className="lg:mx-32 mx-[25px] flex flex-col min-h-screen justify-center items-center py-8">
-        <p className="text-center text-lg text-gray-500">No books available at the moment.</p>
+        <p className="text-center text-lg text-gray-500">
+          No books available at the moment.
+        </p>
       </div>
     );
   }
 
   return (
-    <div className="lg:mx-32 mx-[25px] flex flex-col min-h-screen gap-6 py-8">
+    <div className="flex flex-col min-h-screen ">
       {/* Only show components after the books are loaded */}
-      <CorouselComponent books={books} />
-      <PopularBooks books={books} />
-      <NewReleases books={books} />
+      <LazyRender height="h-[300px]">
+        <CorouselComponent books={books} />
+      </LazyRender>
+
+      <LazyRender height="h-[400px]">
+        <PopularBooks books={books} />
+      </LazyRender>
+
+      <LazyRender height="h-[400px]">
+        <NewReleases books={books} />
+      </LazyRender>
     </div>
   );
 };
