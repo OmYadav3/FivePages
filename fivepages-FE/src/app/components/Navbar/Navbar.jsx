@@ -140,7 +140,13 @@ export default function Navbar() {
           {/* Profile */}
           {isAuthenticated ? (
             <div className="flex items-center gap-2">
-              <FaUserCircle className="text-2xl text-black" />
+
+             <img
+            src={"/default-avatar.webp"}
+            // src={user.profilePic || ""}
+            alt="Profile"
+            className="w-8 h-8 rounded-full border-2 border-gray-300 shadow-sm"
+             />
               <select
                 aria-label="User menu"
                 className="border border-gray-300 rounded-md px-2 py-1 bg-white cursor-pointer"
