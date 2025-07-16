@@ -205,12 +205,12 @@ export default function Navbar() {
               onClick={triggerSearch}
             />
           </div> 
-          <hr className="my-3 border-gray-300" />
+          <hr className="my-3 border-gray-30" />
           {/* Profile / Logout */}
           {isAuthenticated ? (
   <>
-    <div className="text-base text-gray-600 ">
-      <span className="font-semibold text-black">{userLabel}</span>
+    <div className="text-base text-black ">
+      <span className=" text-black">{userLabel}</span>
     </div>
     <button
       onClick={() => {
@@ -221,6 +221,8 @@ export default function Navbar() {
     >
       Profile
     </button>
+   
+    
     <button
       onClick={() => {
         handleLogout();
