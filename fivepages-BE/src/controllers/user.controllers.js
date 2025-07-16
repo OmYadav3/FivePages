@@ -61,7 +61,7 @@ export const loginUser = async (req, res) => {
       return res.status(400).json({ message: "Incorrect password" });
     }
 
-    const accessToken =await  generateAccessToken(user._id);
+    const accessToken = await generateAccessToken(user._id);
 
     if (!accessToken) {
       return res.status(500).json({ message: "Could not generate access token" });
@@ -183,3 +183,23 @@ export const getUserProfile = async (req, res) => {
     res.status(500).json({ message: 'Failed to fetch user profile' });
   }
 };
+
+// forget Password 
+// export const forgetPassword = async (req, res) => {
+
+//   const { email } = req.body
+
+//   if(!email){
+//     return res.status(404).json({message: "Email is required"})
+//   }
+
+//    const user = await User.findOne({email});
+
+//    if (!user) {
+//     return res.status(404).json({ message: "User does not exist"})
+//    } 
+
+
+
+
+// }
