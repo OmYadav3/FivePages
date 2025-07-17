@@ -5,6 +5,7 @@ import Link from "next/link";
 import { FaSearch, FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
 import { useRouter, usePathname } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
+import SearchBar from "../SearchBar";
 
 export default function Navbar() {
   const router = useRouter();
@@ -120,33 +121,18 @@ export default function Navbar() {
         </ul>
 
         {/* Search + Profile (desktop) */}
-        <div className="hidden md:flex items-center gap-6">
-          {/* Search */}
-          <div className="flex items-center border border-gray-400 rounded-md px-3 py-[0.32rem]">
-            <input
-              type="text"
-              placeholder="Search"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onKeyDown={onSearchKeyDown}
-              className="outline-none text-sm text-gray-700 px-2 w-[8rem]"
-            />
-            <FaSearch
-              className="text-blue-700 cursor-pointer"
-              onClick={triggerSearch}
-            />
-          </div>
+        <div className="hidden md:flex items-center justify-center gap-4">
+          {/* 🔍 Desktop SearchBar */}
+          <SearchBar />
 
-          {/* Profile */}
+          {/* 👤 Profile */}
           {isAuthenticated ? (
             <div className="flex items-center gap-2">
-
-             <img
-            src={"/default-avatar.webp"}
-            // src={user.profilePic || ""}
-            alt="Profile"
-            className="w-8 h-8 rounded-full border-2 border-gray-300 shadow-sm"
-             />
+              <img
+                src={"/default-avatar.webp"}
+                alt="Profile"
+                className="w-8 h-8 rounded-full border-2 border-gray-300 shadow-sm"
+              />
               <select
                 aria-label="User menu"
                 className="border border-gray-300 rounded-md px-2 py-1 bg-white cursor-pointer"
@@ -170,10 +156,9 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* Mobile Dropdown Menu */}
+      {/* 📱 Mobile Dropdown Menu */}
       {menuOpen && (
         <div className="md:hidden bg-white shadow-md px-6 pb-4 space-y-3">
-          {/* Nav Links */}
           {navItems.map(({ path, label }) => {
             const isActive = pathname === path;
             return (
@@ -190,8 +175,8 @@ export default function Navbar() {
             );
           })}
 
-          {/* Search */}
-           <div className="flex items-center border border-gray-400 rounded-md px-3 py-2">
+          {/* 🔍 Mobile Search */}
+          <div className="flex items-center border border-gray-400 rounded-md px-3 py-2">
             <input
               type="text"
               placeholder="Search"
@@ -201,39 +186,37 @@ export default function Navbar() {
               className="outline-none text-sm text-gray-700 px-2 w-full"
             />
             <FaSearch
-              className="text-blue-700 cursor-pointer"
+              className="text-gray-700 cursor-pointer"
               onClick={triggerSearch}
             />
-          </div> 
-          <hr className="my-3 border-gray-30" />
-          {/* Profile / Logout */}
+          </div>
+
+          <hr className="my-3 border-gray-300" />
+
+          {/* 👤 Mobile Profile */}
           {isAuthenticated ? (
-  <>
-    <div className="text-base text-black ">
-      <span className=" text-black">{userLabel}</span>
-    </div>
-    <button
-      onClick={() => {
-        router.push("/profile");
-        setMenuOpen(false);
-      }}
-      className="w-full text-left py-1 text-black hover:text-blue-700"
-    >
-      Profile
-    </button>
-   
-    
-    <button
-      onClick={() => {
-        handleLogout();
-        setMenuOpen(false);
-      }}
-      className="w-full text-left py-1 text-black hover:text-blue-700"
-    >
-      Logout
-    </button>
-  </>
-) : (
+            <>
+              <div className="text-base text-black">{userLabel}</div>
+              <button
+                onClick={() => {
+                  router.push("/profile");
+                  setMenuOpen(false);
+                }}
+                className="w-full text-left py-1 text-black hover:text-blue-700"
+              >
+                Profile
+              </button>
+              <button
+                onClick={() => {
+                  handleLogout();
+                  setMenuOpen(false);
+                }}
+                className="w-full text-left py-1 text-black hover:text-blue-700"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
             <Link href="/login" onClick={() => setMenuOpen(false)}>
               <button className="w-full text-left py-1 text-black hover:text-blue-700">
                 Login
@@ -244,8 +227,11 @@ export default function Navbar() {
       )}
 
       <main id="main-content" />
-
-      <div aria-live="polite" aria-atomic="true" className="fixed top-4 right-4">
+      <div
+        aria-live="polite"
+        aria-atomic="true"
+        className="fixed top-4 right-4"
+      >
         <Toaster />
       </div>
     </>
