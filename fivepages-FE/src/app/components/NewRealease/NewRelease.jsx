@@ -26,7 +26,7 @@ const NewReleases = React.memo(({ books }) => {
       <div className="flex justify-between items-center mb-6 flex-wrap gap-2">
         <h2 className="text-2xl sm:text-3xl font-bold text-gray-800 flex items-center">
           <span className="text-blue-600 text-4xl mr-2 leading-none">▌</span>
-          NewReleases
+          New Releases
         </h2>
         <button
           onClick={() => router.push("/new-releases-page")}
