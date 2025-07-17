@@ -55,7 +55,7 @@ export function PasswordForm({ token }) {
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full bg-black text-white py-3 rounded transition"
+        className="w-full bg-black text-white py-3 rounded transition cursor-pointer"
       >
         {isOpen ? "Hide Change Password" : "Change Password"}
       </button>
@@ -88,7 +88,7 @@ export function PasswordForm({ token }) {
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="text-sm mt-2 text-[#4A90E2]"
+            className="text-sm mt-2 text-[#4A90E2] cursor-pointer"
             disabled={changing}
           >
             {showPassword ? "Hide Password" : "Show Password"}
@@ -97,7 +97,7 @@ export function PasswordForm({ token }) {
           <button
             type="submit"
             disabled={changing}
-            className={`w-full bg-green-500 text-white py-3 rounded hover:bg-green-600 transition mt-6 ${
+            className={`w-full bg-green-500 text-white py-3 rounded hover:bg-green-600 transition mt-6 cursor-pointer ${
               changing && "cursor-not-allowed opacity-70"
             }`}
           >

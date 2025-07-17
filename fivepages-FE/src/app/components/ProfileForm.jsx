@@ -70,7 +70,7 @@ export function ProfileForm({ user, token, setUser }) {
       <button
         type="submit"
         disabled={updating}
-        className={`w-full bg-blue-500 text-white py-3 rounded hover:bg-blue-600 transition mt-6 ${
+        className={`w-full bg-blue-500 text-white py-3 rounded hover:bg-blue-600 transition mt-6 cursor-pointer ${
           updating && "cursor-not-allowed opacity-70"
         }`}
       >

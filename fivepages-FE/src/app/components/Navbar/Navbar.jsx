@@ -35,16 +35,7 @@ export default function Navbar() {
     router.push("/login");
   }, [router]);
 
-  const handleSelectChange = useCallback(
-    (e) => {
-      const val = e.target.value;
-      if (val === "profile") router.push("/profile");
-      else if (val === "logout") handleLogout();
-      e.target.value = "";
-    },
-    [router, handleLogout]
-  );
-
+  
   const triggerSearch = useCallback(() => {
     const q = searchQuery.trim();
     if (q) {
@@ -126,31 +117,22 @@ export default function Navbar() {
           <SearchBar />
 
           {/* 👤 Profile */}
-          {isAuthenticated ? (
-            <div className="flex items-center gap-2">
+          {user ? (
+            <div className="relative">
               <img
-                src={"/default-avatar.webp"}
+                src={user.profilePic || "/default-avatar.webp"}
                 alt="Profile"
-                className="w-8 h-8 rounded-full border-2 border-gray-300 shadow-sm"
+                title="Go to Profile"
+                className="w-8 h-8 rounded-full border-2 border-gray-300 shadow-sm cursor-pointer"
+                onClick={() => router.push("/profile")}
               />
-              <select
-                aria-label="User menu"
-                className="border border-gray-300 rounded-md px-2 py-1 bg-white cursor-pointer"
-                onChange={handleSelectChange}
-                defaultValue=""
-              >
-                <option value="" disabled hidden>
-                  {userLabel}
-                </option>
-                <option value="profile">Profile</option>
-                <option value="logout">Logout</option>
-              </select>
             </div>
           ) : (
-            <Link href="/login">
-              <button className="text-black px-2 py-1 rounded-md hover:bg-gray-100 transition">
-                Login
-              </button>
+            <Link
+              href="/login"
+              className="text-sm font-medium text-blue-600 hover:underline"
+            >
+              Login
             </Link>
           )}
         </div>
