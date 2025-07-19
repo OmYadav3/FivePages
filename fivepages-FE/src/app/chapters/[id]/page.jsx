@@ -1,18 +1,21 @@
 "use client";
-import { useState, useEffect } from "react";
-import Link from "next/link";
+
+import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import CommentSection from "@/app/components/CommentSection/CommentSection";
+import { fetchChapterById, fetchNovelById } from "../../utlis/api.js";
+import { Link } from "lucide-react";
 
 export default function ChapterPage() {
   const router = useRouter();
   const { id } = useParams();
+
   const [chapter, setChapter] = useState(null);
   const [novel, setNovel] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Check for authentication
   useEffect(() => {
     const user = localStorage.getItem("user");
     if (!user) {
@@ -22,27 +25,28 @@ export default function ChapterPage() {
     }
   }, [router]);
 
+
+  // Fetch chapter + novel data
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
 
-        const chapterResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_PORT}chapters/${id}`
-        );
-        if (!chapterResponse.ok) throw new Error("Failed to fetch chapter");
-        const chapterData = await chapterResponse.json();
-        chapterData.content = chapterData.content.replace(/\n/g, "<br>");
+        const chapterData = await fetchChapterById(id);
+        console.log("Fetched chapter:", chapterData);
+        if (!chapterData || chapterData.error) throw new Error("Failed to fetch chapter");
+
+        // Replace \n with <br>
+        chapterData.content = chapterData.content?.replace(/\n/g, "<br>");
         setChapter(chapterData);
 
-        const novelResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_PORT}novels/${chapterData.novel}`
-        );
-        if (!novelResponse.ok) throw new Error("Failed to fetch novel");
-        const novelData = await novelResponse.json();
-        setNovel(novelData);
+        // const novelData = await fetchNovelById(chapterData.novel);
+        // if (!novelData || novelData.error) throw new Error("Failed to fetch novel");
 
-        localStorage.setItem(`lastRead-${chapterData.novel}`, chapterData._id);
+        // setNovel(novelData);
+
+        // // Store last read
+        // localStorage.setItem(`lastRead-${chapterData.novel}`, chapterData._id);
       } catch (err) {
         console.error("Error fetching data:", err);
         setError(err.message);
@@ -51,37 +55,13 @@ export default function ChapterPage() {
       }
     };
 
-    if (isAuthenticated && id) fetchData();
+    if (isAuthenticated && id) {
+      fetchData();
+    }
   }, [id, isAuthenticated]);
 
-  if (!isAuthenticated) {
-    return <div className="text-center py-10">Redirecting to login...</div>;
-  }
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="max-w-2xl mx-auto p-6 text-center">
-        <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-4">
-          <h3 className="text-red-800 font-medium">Error loading chapter</h3>
-          <p className="text-red-700">{error}</p>
-        </div>
-        <button
-          onClick={() => window.location.reload()}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
-        >
-          Try Again
-        </button>
-      </div>
-    );
-  }
+  if (loading) return <div>Loading chapter...</div>;
+  if (error) return <div>Error: {error}</div>;
 
   if (!chapter || !novel) {
     return (
@@ -199,9 +179,9 @@ export default function ChapterPage() {
       </div>
 
       {/* Comments */}
-      <div className="mt-12">
+      {/* <div className="mt-12">
         <CommentSection chapterId={chapter._id} />
-      </div>
+      </div> */}
     </div>
   );
 }

@@ -13,7 +13,7 @@ router.post('/add', verifyJWT, verifyAdmin, createChapter);
 router.patch('/:id', verifyJWT, verifyAdmin, updateChapter);
 
 // Get all chapters for a specific novel
-router.get('/novel/:novelId', getAllChapters);
+router.get('/:novelId', getAllChapters);
 
 //get latest chapters
 router.get('/latest', getLatestChapters);
