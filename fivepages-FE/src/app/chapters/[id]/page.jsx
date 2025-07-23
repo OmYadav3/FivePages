@@ -40,13 +40,13 @@ export default function ChapterPage() {
         chapterData.content = chapterData.content?.replace(/\n/g, "<br>");
         setChapter(chapterData);
 
-        // const novelData = await fetchNovelById(chapterData.novel);
-        // if (!novelData || novelData.error) throw new Error("Failed to fetch novel");
+        const novelData = await fetchNovelById(chapterData?.novel);
+        if (!novelData || novelData.error) throw new Error("Failed to fetch novel");
 
-        // setNovel(novelData);
+        setNovel(novelData);
 
-        // // Store last read
-        // localStorage.setItem(`lastRead-${chapterData.novel}`, chapterData._id);
+        // Store last read
+        localStorage.setItem(`lastRead-${chapterData.novel}`, chapterData._id);
       } catch (err) {
         console.error("Error fetching data:", err);
         setError(err.message);

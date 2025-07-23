@@ -19,7 +19,7 @@ router.get('/:novelId', getAllChapters);
 router.get('/latest', getLatestChapters);
 
 // Get a single chapter by ID
-router.get('/:id', getChapterByID);
+router.get('/chapter/:id', getChapterByID);
 
 //delete chapter by ID
 router.delete('/:id', verifyJWT, verifyAdmin, deleteChapter);

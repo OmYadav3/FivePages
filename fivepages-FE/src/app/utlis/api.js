@@ -32,7 +32,7 @@ const fetchData = async (endpoint, { method = "GET", body = null, headers = {} }
       const errorData = await response.json().catch(() => null);
       throw new Error(errorData?.message || `HTTP ${response.status} - ${response.statusText}`);
     }
-
+    console.log(response)
     return await response.json();
   } catch (error) {
     console.error("API Fetch Error:", error.message);
@@ -44,7 +44,10 @@ const fetchData = async (endpoint, { method = "GET", body = null, headers = {} }
 export const fetchNovelById = (novelId) => fetchData(`novels/${novelId}`);
 export const fetchAllNovels = () => fetchData("novels/");
 export const fetchChaptersByNovel = (novelId) => fetchData(`chapters/${novelId}`);
-export const fetchChapterById = (chapterId) => fetchData(`chapters/${chapterId}`);
+
+export const fetchChapterById = (chapterId) => fetchData(`chapters/chapter/${chapterId}`);
+
+
 export const fetchPopularBooks = () => fetchData("novels/latest");
 export const fetchNewReleases = () => fetchData("novels/latest");
 export const fetchCarouselImages = () => fetchData("novels/latest");

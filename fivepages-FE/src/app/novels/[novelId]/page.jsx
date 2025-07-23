@@ -76,7 +76,7 @@ export default function NovelPage(props) {
         onLike={handleLike}
         onReadList={handleReadList}
       />
-      <ChapterList chapters={chapters} novelId={novelId} />
+      <ChapterList chapters={chapters} novelId={novelId} novel={novel} />
 
       </div>
       <CommentSection novelId={novelId} user={user} />
