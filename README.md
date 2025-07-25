@@ -27,58 +27,59 @@ Admin dashboard for content and user management
 ## 📂 Project Structure
 
 ```text
-src/
-├── app/                          # App Router Pages
-│   ├── layout.js                 # Shared layout (Navbar, Footer)
-│   ├── page.js                   # Homepage
-│   ├── chapters/
-│   │   └── [id]/
-│   │       └── page.jsx          # Chapter page
-│   ├── novels/
-│   │   └── page.jsx              # All Novels page
-│   ├── profile/
-│   │   └── page.jsx              # Profile page
-│   └── ...                       # Other routes (otp, login, search, etc.)
+fivepages-FE/
+├── .next/                     # Next.js build output (auto-generated)
+├── node_modules/              # Installed npm packages
+├── public/                    # Static assets like images, icons, etc.
+├── src/                       # Source code
+│   ├── app/                   # App directory for routing (Next.js App Router)
+│   │   ├── admin-page/        # Admin panel pages
+│   │   ├── allnovels/         # All novels page
+│   │   ├── chapters/          # Chapter detail pages
+│   │   ├── contact/           # Contact page
+│   │   ├── forgot-password/   # Forgot password page
+│   │   ├── login/             # Login page
+│   │   ├── new-releases-page/ # New releases section
+│   │   ├── novels/            # Individual novel pages
+│   │   ├── otp/               # OTP verification pages
+│   │   ├── popularbooks/      # Popular books section
+│   │   ├── profile/           # User profile page
+│   │   ├── search/            # Search results page
+│   │   ├── favicon.ico        # Favicon
+│   │   ├── globals.css        # Global styles
+│   │   ├── layout.js          # Root layout component
+│   │   └── page.js            # Main index route
 │
-├── components/                   # Reusable UI Components
-│   ├── layout/                   # Navbar, Footer, etc.
-│   │   ├── Navbar.jsx
-│   │   ├── Footer.jsx
-│   │   └── SearchBar.jsx
-│   ├── chapter/                  # Chapter‑specific components
-│   │   ├── ChapterList.jsx
-│   │   ├── ChapterHeader.jsx
-│   │   └── CommentSection.jsx
-│   ├── novel/                    # Novel‑related components
-│   │   ├── RecommendedNovels.jsx
-│   │   ├── NovelHeader.jsx
-│   │   └── NovelActions.jsx
-│   ├── auth/                     # Forms for login / register / reset
-│   │   ├── ProfileForm.jsx
-│   │   ├── PasswordForm.jsx
-│   │   └── LoginForm.jsx
-│   └── shared/                   # Carousel, Dashboard, Modal, etc.
-│       ├── Carousel.jsx
-│       └── Dashboard.jsx
+│   ├── components/            # Reusable UI components
+│   │   ├── auth/              # Auth-related components
+│   │   ├── chapter/           # Chapter-related components
+│   │   ├── CommentSection/    # Comment section UI
+│   │   ├── layout/            # Layout components
+│   │   ├── novel/             # Novel-related components
+│   │   ├── shared/            # Shared utilities (e.g., loaders)
+│   │   └── LazyRender.jsx     # Lazy load render component
 │
-├── hooks/                        # Custom React Hooks
-│   ├── useUser.js
-│   ├── useChapterData.js
-│   └── useAuth.js
+│   ├── hooks/                 # Custom React hooks
+│   │   ├── useAuth.js
+│   │   ├── useBooks.js
+│   │   ├── useChapterData.js
+│   │   ├── useForgotPassword.js
+│   │   ├── useNovelData.js
+│   │   ├── useSearchResults.js
+│   │   └── useUser.js
 │
-├── lib/                          # Utility libraries (non‑fetch logic)
-│   └── utils.js
+│   ├── lib/                   # Helper functions or libraries
+│   │   └── utils.js
 │
-├── services/                     # API wrappers
-│   ├── chapterAPI.js
-│   ├── novelAPI.js
-│   ├── authAPI.js
-│   └── commentAPI.js
+│   ├── services/              # API service handlers
+│   │   └── _api.js
 │
-├── styles/
-│   └── globals.css
-│
-└── public/
+├── .env                       # Environment variables
+├── .env.local                 # Local environment config
+├── .gitignore                 # Git ignore rules
+├── components.json            # Component metadata (optional)
+├── eslint.config.mjs          # ESLint configuration
+└── tsconfig.json              # TypeScript config (if using TS)
 
 
 🚀 Live Demo
