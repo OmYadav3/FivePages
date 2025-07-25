@@ -1,47 +1,23 @@
 "use client";
-
 import { useState } from "react";
 import Link from "next/link";
+import { useForgotPassword } from "@/hooks/useForgotPassword";
 
 export default function ForgotPassword() {
   const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const {
+    resetPassword,
+    loading,
+    message,
+    error,
+    setError,
+    setMessage,
+  } = useForgotPassword();
 
   const handleReset = async (e) => {
     e.preventDefault();
-    setMessage("");
-    setError("");
-
-    // Ensure email is valid
-    if (!email) {
-      setError("Please enter your email.");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const response = await fetch(`${process.env.NEXT_PUBLIC_PORT}user/forgot-password`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        setError(data.message || "Something went wrong. Please try again.");
-      } else {
-        setMessage("Password reset link sent to your email.");
-        setEmail(""); // Clear the input field
-      }
-    } catch (err) {
-      setError("Network error. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    await resetPassword(email);
+    setEmail(""); // Clear email after reset
   };
 
   return (
@@ -76,8 +52,8 @@ export default function ForgotPassword() {
 
           <button
             type="submit"
-            className={`cursor-pointer w-full bg-blue-500 text-white py-3 rounded-lg font-medium hover:bg-blue-600 transition ${
-              loading && "opacity-50 cursor-not-allowed"
+            className={`w-full bg-blue-500 text-white py-3 rounded-lg font-medium hover:bg-blue-600 transition ${
+              loading ? "opacity-50 cursor-not-allowed" : ""
             }`}
             disabled={loading}
           >

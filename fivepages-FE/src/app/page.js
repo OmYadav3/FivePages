@@ -1,6 +1,5 @@
 "use client";
-
-import { useEffect, useState } from "react";
+import useBooks from "@/hooks/useBooks";
 import PopularBooks from "../components/novel/Popular";
 import NewReleases from "../components/novel/NewRelease";
 import CorouselComponent from "../components/shared/CarouselComponent";
@@ -14,31 +13,7 @@ const Skeleton = ({ className = "" }) => (
 );
 
 export default function Home() {
-  const [books, setBooks] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
-
-  // Fetching books from API
-  const fetchBooks = async () => {
-    try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_PORT || ""}novels/latest`
-      );
-      if (!res.ok) throw new Error(`API Error: ${res.status}`);
-
-      const data = await res.json();
-      setBooks(data);
-    } catch (err) {
-      console.error("Fetch Error:", err.message);
-      setError("Failed to fetch latest novels.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchBooks();
-  }, []);
+  const { books, loading, error } = useBooks("novels/latest");
 
   if (loading) {
     return (
@@ -87,5 +62,4 @@ export default function Home() {
       </LazyRender>
     </div>
   );
-};
-
+}

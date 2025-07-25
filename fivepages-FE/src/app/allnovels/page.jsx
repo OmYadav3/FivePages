@@ -1,45 +1,36 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { fetchAllNovels } from "../../services/api";
+import useBooks from "@/hooks/useBooks";
 
 export default function AllNovels() {
-  const [books, setBooks] = useState([]);
   const router = useRouter();
+  const { books, loading, error } = useBooks("novels");
 
-  useEffect(() => {
-    const allNovels = async () => {
-      const result = await fetchAllNovels();
-      // console.log(result);
-      if (!result.error) {
-        setBooks(result);
-      } else {
-        cosole.error("Error fetching books ", result.error);
-      }
-    };
-    allNovels();
-  }, []);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error: {error}</p>;
 
   return (
     <>
-       <section className="px-4 sm:px-6 py-6 bg-white">
-        <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8">All Novels</h2>
+      <section className="px-4 sm:px-6 py-6 bg-white">
+        <h2 className="text-3xl sm:text-4xl font-bold text-center mb-8">
+          All Novels
+        </h2>
 
-             {/* Book Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-9  mt-10">
-        {books.slice(0, 20).map((book) => (
-          <div
-            key={book._id}
-            onClick={() => router.push(`/novels/${book._id}`)}
-            className="relative group cursor-pointer overflow-hidden rounded-lg shadow hover:shadow-lg transition-shadow duration-300"
-          >
-            {/* Book Cover Image */}
-            <img
-              src={book.thumbnail}
-              alt={`Cover of ${book.title}`}
-              className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-80"
-            />
+        {/* Book Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-6 gap-9  mt-10">
+          {books.slice(0, 20).map((book) => (
+            <div
+              key={book._id}
+              onClick={() => router.push(`/novels/${book._id}`)}
+              className="relative group cursor-pointer overflow-hidden rounded-lg shadow hover:shadow-lg transition-shadow duration-300"
+            >
+              {/* Book Cover Image */}
+              <img
+                src={book.thumbnail}
+                alt={`Cover of ${book.title}`}
+                className="w-full h-full object-cover transition-opacity duration-300 group-hover:opacity-80"
+              />
 
               {/* Soft Overlay with Details */}
               <div className="absolute inset-0 bg-white/10 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center text-gray-800 p-4 text-center">
@@ -54,9 +45,9 @@ export default function AllNovels() {
                   {book.description}
                 </p>
               </div>
-          </div>
-        ))}
-      </div>
+            </div>
+          ))}
+        </div>
       </section>
     </>
   );

@@ -1,64 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { fetchChapterById, fetchNovelById } from "../../../services/api.js";
 import Link from 'next/link'
+import { useChapterData } from "@/hooks/useChapterData";
 
 export default function ChapterPage() {
-  const router = useRouter();
-  const { id } = useParams();
+  const { id, chapter, novel, loading, error } = useChapterData();
 
-  const [chapter, setChapter] = useState(null);
-  const [novel, setNovel] = useState(null);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  // Check for authentication
-  useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (!user) {
-      router.push("/login");
-    } else {
-      setIsAuthenticated(true);
-    }
-  }, [router]);
-
-
-  // Fetch chapter + novel data
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        setLoading(true);
-
-        const chapterData = await fetchChapterById(id);
-        
-        if (!chapterData || chapterData.error) throw new Error("Failed to fetch chapter");
-
-        // Replace \n with <br>
-        chapterData.content = chapterData.content?.replace(/\n/g, "<br>");
-        setChapter(chapterData);
-
-        const novelData = await fetchNovelById(chapterData?.novel);
-        if (!novelData || novelData.error) throw new Error("Failed to fetch novel");
-
-        setNovel(novelData);
-
-        // Store last read
-        localStorage.setItem(`lastRead-${chapterData.novel}`, chapterData._id);
-      } catch (err) {
-        console.error("Error fetching data:", err);
-        setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    if (isAuthenticated && id) {
-      fetchData();
-    }
-  }, [id, isAuthenticated]);
 
   if (loading) return <div>Loading chapter...</div>;
   if (error) return <div>Error: {error}</div>;

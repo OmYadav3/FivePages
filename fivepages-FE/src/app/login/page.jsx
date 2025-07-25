@@ -1,106 +1,26 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import useAuth from "@/hooks/useAuth";
 import Link from "next/link";
-import toast from "react-hot-toast";
 
 export default function AuthPage() {
-  const router = useRouter();
-  const [isLogin, setIsLogin] = useState(true);
-  const [email, setEmail] = useState("");
-  const [name, setName] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-
-  const emailRef = useRef(null);
-  const passwordRef = useRef(null);
-  const nameRef = useRef(null);
-
-  const handleKeyDown = (e, nextRef) => {
-    if (e.key === "Enter") {
-      e.preventDefault();
-      if (nextRef?.current) {
-        nextRef.current.focus();
-      }
-    }
-  };
-
-  useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    if (storedUser) {
-      setIsAuthenticated(true);
-      router.push("/");
-    }
-  }, [router]);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError("");
-
-    if (!email || !password || (!isLogin && !name)) {
-      setError("Please fill in all fields.");
-      return;
-    }
-
-    if (!isLogin && name.length < 3) {
-      setError("Name must be at least 3 characters.");
-      return;
-    }
-
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters.");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      const response = await fetch(
-        isLogin
-          ? `${process.env.NEXT_PUBLIC_PORT}user/login`
-          : `${process.env.NEXT_PUBLIC_PORT}user/register`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            email,
-            password,
-            ...(isLogin ? {} : { name }),
-          }),
-        }
-      );
-
-      const data = await response.json();
-      console.log(data)
-      if (!response.ok) {
-        setError(data.message || "Something went wrong!");
-      } else {
-        // ✅ Updated: Save user info + token
-        localStorage.setItem("user", JSON.stringify({ ...data.user, token: data.accessToken }));
-        setIsAuthenticated(true);
-
-        setEmail("");
-        setPassword("");
-        setName("");
-
-        if (data.user) {
-          if (isLogin) {
-            toast.success("Login successful! Redirecting...");
-          } else {
-            toast.success("Registration successful! Redirecting...");
-          }
-          router.push("/");
-        }
-      }
-    } catch (err) {
-      setError("Network error. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const {
+    isLogin,
+    setIsLogin,
+    email,
+    setEmail,
+    password,
+    setPassword,
+    name,
+    setName,
+    error,
+    loading,
+    emailRef,
+    passwordRef,
+    nameRef,
+    handleKeyDown,
+    handleSubmit,
+  } = useAuth();
 
   return (
     <div className="flex justify-center items-center min-h-screen bg-[#F4F4F4]">
