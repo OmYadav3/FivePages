@@ -1,9 +1,9 @@
 "use client";
 
 import { useMemo } from "react";
-import { useUser } from "../hooks/useUser.js"; // adjust path if needed
-import { ProfileForm } from ".././components/ProfileForm";
-import { PasswordForm } from ".././components/PasswordForm";
+import { useUser } from "../../hooks/useUser.js"; // adjust path if needed
+import { ProfileForm } from "../../components/auth/ProfileForm.jsx";
+import { PasswordForm } from "../../components/auth/PasswordForm.jsx";
 
 export default function UserProfilePage() {
   const defaultUser = useMemo(

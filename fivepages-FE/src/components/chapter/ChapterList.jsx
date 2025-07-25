@@ -1,8 +1,7 @@
-"use client";
 import Link from "next/link";
 
 export default function ChapterList({ chapters }) {
-  // console.log(chapters)
+
   return (
     <div className="bg-white px-6 py-4 mt-4 rounded-xl shadow-md border border-gray-300 space-y-4 w-full max-w-2xl">
       <h2 className="text-lg sm:text-xl font-semibold text-gray-800 break-words">

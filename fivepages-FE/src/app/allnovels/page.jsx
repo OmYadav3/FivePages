@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { fetchAllNovels } from "./../utlis/api";
+import { fetchAllNovels } from "../../services/api";
 
 export default function AllNovels() {
   const [books, setBooks] = useState([]);

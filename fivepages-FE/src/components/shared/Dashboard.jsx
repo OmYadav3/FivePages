@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import PopularBooks from "../Popular/Popular";
-import NewReleases from "../NewRealease/NewRelease";
-import CorouselComponent from "../Corousel/CarouselComponent";
+import PopularBooks from "../novel/Popular";
+import NewReleases from "../novel/NewRelease";
+import CorouselComponent from "./CarouselComponent";
 import LazyRender from "../LazyRender"; // path depends on your structure
 
 // Reusable Skeleton Loader

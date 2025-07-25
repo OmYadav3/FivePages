@@ -137,7 +137,7 @@ export const getChapterByID = async (req, res) => {
 
 
     if (!chapter) return res.status(404).json({ message: 'Chapter not found' });
-    console.log(chapterID, chapter)
+    // console.log(chapterID, chapter)
     res.status(200).json(chapter);
     
   } catch (err) {

@@ -3,10 +3,10 @@
 import { use, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
-import NovelHeader from "../../components/NovelHeader";
-import NovelActions from "../../components/NovelActions";
-import ChapterList from "../../components/ChapterList";
-import CommentSection from "../../components/CommentSection/CommentSection";
+import NovelHeader from "../../../components/novel/NovelHeader";
+import NovelActions from "../../../components/novel/NovelActions";
+import ChapterList from "../../../components/chapter/ChapterList";
+import CommentSection from "../../../components/CommentSection/CommentSection";
 
 import {
   fetchNovelById,
@@ -15,7 +15,7 @@ import {
   // unlikeNovel,
   // addToReadList,
   // removeFromReadList,
-} from "../../utlis/api.js"; // adjust path if needed
+} from "../../../services/api.js"; // adjust path if needed
 
 export default function NovelPage(props) {
   const { novelId } = use(props.params);

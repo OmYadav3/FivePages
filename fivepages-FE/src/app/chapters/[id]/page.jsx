@@ -2,8 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { fetchChapterById, fetchNovelById } from "../../utlis/api.js";
-import { Link } from "lucide-react";
+import { fetchChapterById, fetchNovelById } from "../../../services/api.js";
+import Link from 'next/link'
 
 export default function ChapterPage() {
   const router = useRouter();
@@ -33,7 +33,7 @@ export default function ChapterPage() {
         setLoading(true);
 
         const chapterData = await fetchChapterById(id);
-        console.log("Fetched chapter:", chapterData);
+        
         if (!chapterData || chapterData.error) throw new Error("Failed to fetch chapter");
 
         // Replace \n with <br>
@@ -102,8 +102,8 @@ export default function ChapterPage() {
       </nav>
 
       {/* Titles */}
-      <div className="mb-8 px-4">
-        <h1 className="text-3xl font-bold text-gray-900">{novel.title}</h1>
+      <div className="mb-4 px-4">
+        <h1 className="text-5xl font-bold text-gray-900">{novel.title}</h1>
         <h2 className="text-2xl font-semibold text-gray-800 mt-2">
           {chapter.title}
         </h2>

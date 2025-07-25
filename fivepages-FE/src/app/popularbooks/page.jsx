@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { fetchPopularBooks } from "./../utlis/api";
+import { fetchPopularBooks } from "../../services/api";
 
 export default function PopularBooks() {
   const [books, setBooks] = useState([]);

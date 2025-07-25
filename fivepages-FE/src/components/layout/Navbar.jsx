@@ -5,7 +5,7 @@ import Link from "next/link";
 import { FaSearch, FaUserCircle, FaBars, FaTimes } from "react-icons/fa";
 import { useRouter, usePathname } from "next/navigation";
 import toast, { Toaster } from "react-hot-toast";
-import SearchBar from "../SearchBar";
+import SearchBar from "./SearchBar";
 
 export default function Navbar() {
   const router = useRouter();

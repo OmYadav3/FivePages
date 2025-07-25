@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { fetchNewReleases } from "./../utlis/api";
+import { fetchNewReleases } from "../../services/api";
 
 export default function NewReleasesPage() {
   const [books, setBooks] = useState([]);
