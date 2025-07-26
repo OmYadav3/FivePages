@@ -2,10 +2,6 @@ import { useEffect, useState } from "react";
 import {
   fetchNovelById,
   fetchChaptersByNovel,
-//   likeNovel,
-//   unlikeNovel,
-//   addToReadList,
-//   removeFromReadList,
 } from "@/services/api";
 
 export const useNovelData = (novelId, router) => {
