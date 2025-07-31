@@ -1,15 +1,18 @@
 "use client";
+
 import { useRouter } from "next/navigation";
 
 import NovelHeader from "@/components/novel/NovelHeader";
 import NovelActions from "@/components/novel/NovelActions";
 import ChapterList from "@/components/chapter/ChapterList";
-import CommentSection from "@/components/CommentSection/CommentSection";
+import CommentSection from "@/components/CommentSection";
 
 import { useNovelData } from "@/hooks/useNovelData";
+import Link from "next/link";
+import { use } from "react";
 
-export default function NovelPage(props) {
-  const { novelId } = props.params;
+export default function NovelPage({params}) {
+  const { novelId } = use(params);
   const router = useRouter();
 
   const {
@@ -23,7 +26,12 @@ export default function NovelPage(props) {
   } = useNovelData(novelId, router);
 
   if (!novel || chapters.length === 0) {
-  return <div className="text-center mt-20">Loading...</div>;
+  return (<div className="max-w-2xl mx-auto p-6 text-center">
+        <p className="text-gray-600 mb-4">Novel's Chapter data not found</p>
+        <Link href="/" className="text-blue-500 hover:underline">
+          Return to homepage
+        </Link>
+      </div>)
 }
 
   return (
